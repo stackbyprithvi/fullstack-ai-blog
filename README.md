@@ -39,16 +39,66 @@ A full-stack blog application built with the MERN stack featuring AI-powered blo
 
 ## Project Structure
 mern-blog-app/
+│
 ├── backend/
-│ ├── controller/ Business logic
-│ ├── models/ MongoDB schemas
-│ ├── routes/ API endpoints
-│ ├── middleware/ Auth middleware
-│ └── utils/ Helper functions
-└── frontend/
-├── src/
-│ ├── components/ Reusable UI components
-│ ├── pages/ Page components
-│ ├── context/ React Context providers
-│ ├── services/ API services
-│ └── utils/ Frontend utilities
+│   ├── controller/
+│   │   └── authController.js
+│   │
+│   ├── models/
+│   │   └── User.js
+│   │   └── Post.js
+│   │   └── Comment.js
+│   │
+│   ├── routes/
+│   │   └── authRoutes.js
+│   │   └── postRoutes.js
+│   │   └── commentRoutes.js
+│   │   └── aiRoutes.js
+│   │
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   │
+│   ├── utils/
+│   │   └── jwt.js
+│   │
+│   ├── .env
+│   ├── server.js
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── NavBar.jsx
+│   │   │   ├── CreatePost.jsx
+│   │   │   ├── EditPost.jsx
+│   │   │   ├── CommentSection.jsx
+│   │   │   ├── AIBlogGenerator.jsx
+│   │   │   └── ProtectedRoute.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── ForgotPassword.jsx
+│   │   │   └── ResetPassword.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── ThemeContext.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   └── postService.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
+│   ├── .env
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+│
+├── .gitignore
+└── README.md
