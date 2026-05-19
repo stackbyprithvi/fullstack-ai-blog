@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { postService } from "../services/postService";
+import AIBlogGenerator from "./AIBlogGenerator";
 
 const CreatePost = ({ onPostCreated }) => {
   const [title, setTitle] = useState("");
@@ -7,6 +8,7 @@ const CreatePost = ({ onPostCreated }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [showAI, setShowAI] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,16 +30,38 @@ const CreatePost = ({ onPostCreated }) => {
     }
   };
 
+  const fillFromAI = (aiContent) => {
+    setContent(aiContent);
+    setShowAI(false);
+  };
+
   return (
     <div>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Create New Post</h3>
+        <button
+          onClick={() => setShowAI(!showAI)}
+          className="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded"
+        >
+          {showAI ? "Hide AI" : "AI Writer"}
+        </button>
+      </div>
+
+      {showAI && (
+        <div className="mb-4 p-4 bg-gray-50 rounded border">
+          <AIBlogGenerator onGenerate={fillFromAI} />
+        </div>
+      )}
+
       {success && (
         <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
-          Post created successfully! ✓
+          Post created!
         </div>
       )}
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
       )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -52,7 +76,7 @@ const CreatePost = ({ onPostCreated }) => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           className="w-full px-3 py-2 border rounded"
-          rows="4"
+          rows="6"
           required
         />
         <button
