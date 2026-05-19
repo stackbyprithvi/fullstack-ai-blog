@@ -38,67 +38,40 @@ A full-stack blog application built with the MERN stack featuring AI-powered blo
 - Google Gemini API via OpenRouter
 
 ## Project Structure
+```text
 mern-blog-app/
-│
 ├── backend/
 │   ├── controller/
 │   │   └── authController.js
-│   │
 │   ├── models/
-│   │   └── User.js
-│   │   └── Post.js
+│   │   ├── User.js
+│   │   ├── Post.js
 │   │   └── Comment.js
-│   │
 │   ├── routes/
-│   │   └── authRoutes.js
-│   │   └── postRoutes.js
-│   │   └── commentRoutes.js
+│   │   ├── authRoutes.js
+│   │   ├── postRoutes.js
+│   │   ├── commentRoutes.js
 │   │   └── aiRoutes.js
-│   │
 │   ├── middleware/
 │   │   └── authMiddleware.js
-│   │
 │   ├── utils/
 │   │   └── jwt.js
-│   │
 │   ├── .env
 │   ├── server.js
 │   └── package.json
-│
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── NavBar.jsx
-│   │   │   ├── CreatePost.jsx
-│   │   │   ├── EditPost.jsx
-│   │   │   ├── CommentSection.jsx
-│   │   │   ├── AIBlogGenerator.jsx
-│   │   │   └── ProtectedRoute.jsx
-│   │   │
 │   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   ├── ForgotPassword.jsx
-│   │   │   └── ResetPassword.jsx
-│   │   │
 │   │   ├── context/
-│   │   │   ├── AuthContext.jsx
-│   │   │   └── ThemeContext.jsx
-│   │   │
 │   │   ├── services/
-│   │   │   ├── api.js
-│   │   │   └── postService.js
-│   │   │
 │   │   ├── App.jsx
 │   │   ├── main.jsx
 │   │   └── index.css
-│   │
 │   ├── .env
 │   ├── index.html
 │   ├── package.json
 │   └── vite.config.js
-│
 ├── .gitignore
 └── README.md
+```
