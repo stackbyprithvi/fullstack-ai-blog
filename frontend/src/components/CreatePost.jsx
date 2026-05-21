@@ -1,3 +1,4 @@
+// CreatePost.jsx
 import React, { useState } from "react";
 import { postService } from "../services/postService";
 import AIBlogGenerator from "./AIBlogGenerator";
@@ -5,23 +6,30 @@ import AIBlogGenerator from "./AIBlogGenerator";
 const CreatePost = ({ onPostCreated }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
   const [showAI, setShowAI] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     setSuccess(false);
     setError("");
 
     try {
       const newPost = await postService.createPost(title, content);
+
       onPostCreated(newPost);
+
       setTitle("");
       setContent("");
+
       setSuccess(true);
+
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create post");
@@ -37,54 +45,110 @@ const CreatePost = ({ onPostCreated }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Create New Post</h3>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h3 className="text-2xl font-semibold tracking-tight">Create post</h3>
+
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Share your thoughts.
+          </p>
+        </div>
+
         <button
           onClick={() => setShowAI(!showAI)}
-          className="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded"
+          className="
+            rounded-full
+            border
+            bg-[var(--surface)]
+            px-4
+            py-2
+            text-sm
+            transition
+            hover:border-[var(--primary)]
+          "
         >
-          {showAI ? "Hide AI" : "AI Writer"}
+          {showAI ? "Close AI" : "AI Writer"}
         </button>
       </div>
 
       {showAI && (
-        <div className="mb-4 p-4 bg-gray-50 rounded border">
+        <div className="mb-5 rounded-[1.5rem] border bg-[var(--bg)] p-5">
           <AIBlogGenerator onGenerate={fillFromAI} />
         </div>
       )}
 
       {success && (
-        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
-          Post created!
+        <div className="mb-4 text-sm text-[var(--accent)]">
+          Post published successfully.
         </div>
       )}
+
       {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
+        <div className="mb-4 text-sm text-[var(--secondary)]">{error}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
-          placeholder="Title"
+          placeholder="Post title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-3 py-2 border rounded"
+          className="
+            w-full
+            rounded-[1.5rem]
+            border
+            bg-transparent
+            px-5
+            py-4
+            text-sm
+            outline-none
+            transition
+            placeholder:text-[var(--muted)]
+            focus:border-[var(--primary)]
+          "
           required
         />
+
         <textarea
-          placeholder="Content"
+          placeholder="Write your story..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full px-3 py-2 border rounded"
-          rows="6"
+          rows="7"
+          className="
+            w-full
+            resize-none
+            rounded-[1.5rem]
+            border
+            bg-transparent
+            px-5
+            py-4
+            text-sm
+            leading-8
+            outline-none
+            transition
+            placeholder:text-[var(--muted)]
+            focus:border-[var(--primary)]
+          "
           required
         />
+
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+          className="
+            rounded-full
+            bg-[var(--primary)]
+            px-6
+            py-3
+            text-sm
+            font-medium
+            text-white
+            transition
+            hover:opacity-90
+            disabled:opacity-50
+          "
         >
-          {loading ? "Creating..." : "Create Post"}
+          {loading ? "Publishing..." : "Publish Post"}
         </button>
       </form>
     </div>

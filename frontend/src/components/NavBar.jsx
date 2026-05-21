@@ -1,64 +1,88 @@
-import React from "react";
+// Navbar.jsx
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 
-const NavBar = () => {
-  const { user, logout } = useAuth();
+const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
 
   return (
-    <nav className="border-b bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <header className="border-b bg-[var(--bg)]/80 backdrop-blur">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <Link to="/" className="text-xl font-semibold tracking-tight">
+          SOMETHING
+        </Link>
+
+        <nav className="flex items-center gap-5 text-sm">
           <Link
             to="/"
-            className="text-xl font-semibold text-gray-800 dark:text-gray-100"
+            className="text-[var(--muted)] transition hover:text-[var(--text)]"
           >
-            BlogApp
+            Home
           </Link>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
+          {user && (
+            <Link
+              to="/profile"
+              className="text-[var(--muted)] transition hover:text-[var(--text)]"
             >
-              {theme === "light" ? "🌙" : "☀️"}
-            </button>
+              Profile
+            </Link>
+          )}
 
-            {user ? (
-              <>
-                <Link
-                  to="/profile"
-                  className="text-gray-700 dark:text-gray-300"
-                >
-                  Profile
-                </Link>
-                <button
-                  onClick={logout}
-                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="text-gray-700 dark:text-gray-300">
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                >
-                  Register
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
+          <button
+            onClick={toggleTheme}
+            className="
+              rounded-full
+              border
+              px-3
+              py-1.5
+              text-[var(--muted)]
+              transition
+              hover:border-[var(--primary)]
+              hover:text-[var(--text)]
+            "
+          >
+            {theme === "light" ? "Dark" : "Light"}
+          </button>
+
+          {!user ? (
+            <>
+              <Link
+                to="/login"
+                className="text-[var(--muted)] transition hover:text-[var(--text)]"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                className="
+                  rounded-full
+                  bg-[var(--primary)]
+                  px-4
+                  py-2
+                  text-white
+                  transition
+                  hover:opacity-90
+                "
+              >
+                Register
+              </Link>
+            </>
+          ) : (
+            <button
+              onClick={logout}
+              className="text-[var(--muted)] transition hover:text-[var(--secondary)]"
+            >
+              Logout
+            </button>
+          )}
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 };
 
-export default NavBar;
+export default Navbar;

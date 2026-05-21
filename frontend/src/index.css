@@ -1,140 +1,55 @@
 @import "tailwindcss";
 
-/* Light mode (default) */
 :root {
-  --bg-page: #f9fafb;
-  --bg-card: #ffffff;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --border: #e5e7eb;
+  --bg: #f5f1e8;
+  --surface: #fafaf8;
+  --text: #1a1a1a;
+  --muted: #666666;
+  --border: #e8e8e8;
+
+  --primary: #c85a2e;
+  --secondary: #e84d2f;
+
+  --soft: #f4d4c8;
+  --accent: #7b9f8e;
 }
 
-/* Dark mode */
 .dark {
-  --bg-page: #111827;
-  --bg-card: #1f2937;
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --border: #374151;
+  --bg: #141414;
+  --surface: #1b1b1b;
+  --text: #f5f5f5;
+  --muted: #a1a1a1;
+  --border: #2a2a2a;
+
+  --primary: #e07a52;
+  --secondary: #ff6b4a;
+
+  --soft: #3a2a25;
+  --accent: #8eb3a2;
 }
 
-/* Body background */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: var(--bg-page);
-  color: var(--text-primary);
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, sans-serif;
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Card backgrounds */
-.bg-white,
-.bg-gray-50,
-.card,
-.card-elevated {
-  background-color: var(--bg-card) !important;
-}
-
-/* Dark mode card backgrounds */
-html.dark .bg-white,
-html.dark .bg-gray-50,
-html.dark .card,
-html.dark .card-elevated {
-  background-color: #1f2937 !important;
-}
-
-/* Primary text colors */
-.text-gray-900,
-.text-zinc-900,
-.text-gray-800,
-.text-primary {
-  color: var(--text-primary) !important;
-}
-
-/* Secondary text colors */
-.text-gray-600,
-.text-gray-500,
-.text-zinc-500,
-.text-gray-400,
-.text-secondary,
-.text-tertiary {
-  color: var(--text-secondary) !important;
-}
-
-/* Border colors */
-.border-gray-200,
-.border-zinc-200,
-.border-gray-100,
-.border {
-  border-color: var(--border) !important;
-}
-
-/* Dark mode specific overrides */
-html.dark body {
-  background-color: #111827;
-  color: #f9fafb;
-}
-
-html.dark .text-gray-900,
-html.dark .text-zinc-900,
-html.dark .text-gray-800 {
-  color: #f9fafb !important;
-}
-
-html.dark .text-gray-600,
-html.dark .text-gray-500,
-html.dark .text-zinc-500 {
-  color: #9ca3af !important;
-}
-
-html.dark .border-gray-200,
-html.dark .border-zinc-200 {
-  border-color: #374151 !important;
-}
-
-/* Button styles for dark mode */
-html.dark .bg-gray-100 {
-  background-color: #374151 !important;
-}
-
-html.dark .hover\:bg-gray-200:hover {
-  background-color: #4b5563 !important;
-}
-
-html.dark .bg-blue-100 {
-  background-color: #1e3a8a !important;
-}
-
-html.dark .text-blue-700 {
-  color: #60a5fa !important;
-}
-
-html.dark .bg-red-100 {
-  background-color: #7f1d1d !important;
-}
-
-html.dark .text-red-700 {
-  color: #fca5a5 !important;
-}
-
-/* Smooth transitions */
 * {
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
+  border-color: var(--border);
 }
 
-/* Loading spinner */
-.animate-spin {
-  animation: spin 1s linear infinite;
+::selection {
+  background: var(--primary);
+  color: white;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+option {
+  background: var(--surface);
+  color: var(--text);
 }

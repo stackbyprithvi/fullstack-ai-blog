@@ -1,22 +1,30 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+// App.jsx
+import { Routes, Route } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
-import ProtectedRoute from "./components/ProtectedRoute";
-import NavBar from "./components/NavBar";
-import "./index.css";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import NavBar from "./components/NavBar";
+
 function App() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
       <NavBar />
+
       <Routes>
         <Route path="/login" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
+
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+
         <Route
           path="/"
           element={
@@ -25,6 +33,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/profile"
           element={
@@ -33,13 +42,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="*"
           element={
-            <div className="text-center mt-10">
-              <h1 className="text-gray-800 dark:text-white">
-                404 - Page Not Found
-              </h1>
+            <div className="mt-20 text-center">
+              <h1 className="text-2xl font-semibold">404</h1>
+
+              <p className="mt-2 text-sm text-[var(--muted)]">Page not found</p>
             </div>
           }
         />

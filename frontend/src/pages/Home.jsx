@@ -1,3 +1,4 @@
+// Home.jsx
 import React, { useState, useEffect } from "react";
 import { postService } from "../services/postService";
 import { useAuth } from "../context/AuthContext";
@@ -10,6 +11,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [likingPostId, setLikingPostId] = useState(null);
   const [editingPostId, setEditingPostId] = useState(null);
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -23,25 +25,40 @@ const Home = () => {
         setLoading(false);
       }
     };
+
     fetchPosts();
   }, []);
 
-  const handlePostCreated = (newPost) => setPosts([newPost, ...posts]);
-  const handlePostUpdated = (updatedPost) =>
-    setPosts(posts.map((p) => (p._id === updatedPost._id ? updatedPost : p)));
+  const handlePostCreated = (newPost) => {
+    setPosts([newPost, ...posts]);
+  };
+
+  const handlePostUpdated = (updatedPost) => {
+    setPosts((prev) =>
+      prev.map((p) => (p._id === updatedPost._id ? updatedPost : p)),
+    );
+
+    setEditingPostId(null);
+  };
+
   const handleDelete = async (postId) => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    if (!window.confirm("Delete this post?")) return;
+
     await postService.deletePost(postId);
+
     setPosts(posts.filter((p) => p._id !== postId));
   };
 
   const handleLike = async (postId) => {
-    if (!user) return alert("Please log in to like posts");
+    if (!user) return alert("Please log in");
+
     if (likingPostId === postId) return;
+
     setLikingPostId(postId);
 
     try {
       const updatedPost = await postService.likePost(postId);
+
       setPosts(posts.map((p) => (p._id === postId ? updatedPost : p)));
     } catch {
       alert("Failed to like post");
@@ -50,165 +67,120 @@ const Home = () => {
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">
-            Loading posts...
-          </p>
-        </div>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent" />
       </div>
     );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="mb-12 text-center sm:text-left">
-          <h1 className="text-4xl font-bold mb-3 text-gray-900 dark:text-white">
-            Latest Articles
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Explore insights and stories from our community
-          </p>
+    <div className="mx-auto max-w-3xl px-6 py-20">
+      <div className="mb-20">
+        <p className="mb-3 text-sm uppercase tracking-[0.2em] text-[var(--primary)]">
+          Journal
+        </p>
+
+        <h1 className="text-5xl font-semibold leading-tight tracking-tight">
+          Thoughts, stories and ideas.
+        </h1>
+
+        <p className="mt-5 max-w-lg text-sm leading-7 text-[var(--muted)]">
+          A calm space for writing and meaningful conversations.
+        </p>
+      </div>
+
+      {user && (
+        <div className="mb-16 rounded-[2rem] border bg-[var(--surface)] p-6">
+          <CreatePost onPostCreated={handlePostCreated} />
         </div>
+      )}
 
-        {/* Create Post Section */}
-        {user && (
-          <div className="mb-10">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-5 text-gray-900 dark:text-white">
-                Share Your Thoughts
-              </h2>
-              <CreatePost onPostCreated={handlePostCreated} />
-            </div>
-          </div>
-        )}
+      {posts.length === 0 ? (
+        <div className="py-20 text-sm text-[var(--muted)]">
+          No posts available.
+        </div>
+      ) : (
+        <div className="space-y-10">
+          {posts.map((post) => {
+            const isLiking = likingPostId === post._id;
 
-        {/* Posts List */}
-        {posts.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-            <p className="text-gray-600 dark:text-gray-400 text-lg">
-              No posts yet. Be the first to share!
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {posts.map((post) => {
-              const isLiked =
-                user &&
-                post.likes?.some((id) => id.toString() === user._id.toString());
-              const isLiking = likingPostId === post._id;
-              const isEditing = editingPostId === post._id;
+            const isEditing = editingPostId === post._id;
 
-              return (
-                <article
-                  key={post._id}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="p-6 sm:p-8">
-                    {isEditing ? (
-                      <EditPost
-                        post={post}
-                        onPostUpdated={handlePostUpdated}
-                        onCancel={() => setEditingPostId(null)}
-                      />
-                    ) : (
-                      <>
-                        {/* Post Header */}
-                        <div className="mb-6">
-                          <h2 className="text-2xl font-bold mb-4 leading-tight text-gray-900 dark:text-white">
-                            {post.title}
-                          </h2>
-                          <div className="flex flex-wrap items-center gap-4 text-sm">
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-medium">
-                                {post.author?.username?.charAt(0).toUpperCase()}
-                              </div>
-                              <div>
-                                <p className="font-medium text-gray-900 dark:text-white">
-                                  {post.author?.username || "Anonymous"}
-                                </p>
-                              </div>
-                            </div>
-                            <span className="text-gray-500 dark:text-gray-400">
-                              {new Date(post.createdAt).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                },
-                              )}
-                            </span>
-                            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
-                              Article
-                            </span>
-                          </div>
-                        </div>
+            return (
+              <article
+                key={post._id}
+                className="rounded-[2rem] border bg-[var(--surface)] p-8 transition hover:border-[var(--primary)]/30"
+              >
+                {isEditing ? (
+                  <EditPost
+                    post={post}
+                    onPostUpdated={handlePostUpdated}
+                    onCancel={() => setEditingPostId(null)}
+                  />
+                ) : (
+                  <>
+                    <div className="mb-5 flex items-center gap-3 text-xs text-[var(--muted)]">
+                      <span>{post.author?.username || "Anonymous"}</span>
 
-                        {/* Post Content */}
-                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 whitespace-pre-wrap">
-                          {post.content}
-                        </p>
+                      <span>•</span>
 
-                        {/* Actions */}
-                        <div className="flex flex-wrap gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+                      <span>
+                        {new Date(post.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
+
+                    <h2 className="mb-5 text-3xl font-semibold tracking-tight">
+                      {post.title}
+                    </h2>
+
+                    <p className="whitespace-pre-wrap text-sm leading-8 text-[var(--muted)]">
+                      {post.content}
+                    </p>
+
+                    <div className="mt-8 flex items-center gap-6 text-sm">
+                      <button
+                        onClick={() => handleLike(post._id)}
+                        disabled={!user || isLiking}
+                        className="text-[var(--primary)] transition hover:opacity-70"
+                      >
+                        Like ({post.likes?.length || 0})
+                      </button>
+
+                      {user && user._id === post.author?._id && (
+                        <>
                           <button
-                            onClick={() => handleLike(post._id)}
-                            disabled={!user || isLiking}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                              isLiked
-                                ? "bg-blue-500 text-white hover:bg-blue-600"
-                                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                            } disabled:opacity-50 disabled:cursor-not-allowed`}
+                            onClick={() => setEditingPostId(post._id)}
+                            className="text-[var(--muted)] transition hover:text-[var(--text)]"
                           >
-                            <span className="text-lg mr-2">
-                              {isLiked ? "❤️" : "🤍"}
-                            </span>
-                            {isLiking
-                              ? "Liking..."
-                              : isLiked
-                                ? "Liked"
-                                : "Like"}
-                            <span className="ml-1.5 text-sm opacity-80">
-                              ({post.likes?.length || 0})
-                            </span>
+                            Edit
                           </button>
 
-                          {user && user._id === post.author?._id && (
-                            <>
-                              <button
-                                onClick={() => setEditingPostId(post._id)}
-                                className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
-                              >
-                                ✏️ Edit
-                              </button>
-                              <button
-                                onClick={() => handleDelete(post._id)}
-                                className="px-4 py-2 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium hover:bg-red-200 dark:hover:bg-red-800 transition-all ml-auto"
-                              >
-                                🗑️ Delete
-                              </button>
-                            </>
-                          )}
-                        </div>
+                          <button
+                            onClick={() => handleDelete(post._id)}
+                            className="text-[var(--muted)] transition hover:text-[var(--secondary)]"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
 
-                        {/* Comments Section */}
-                        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                          <CommentSection postId={post._id} />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                    <div className="mt-10 border-t pt-8">
+                      <CommentSection postId={post._id} />
+                    </div>
+                  </>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
