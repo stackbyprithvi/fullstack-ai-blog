@@ -25,7 +25,6 @@ router.post("/generate-blog", async (req, res) => {
       content: completion.choices[0].message.content,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       success: false,
       error: error.message,
