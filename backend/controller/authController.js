@@ -85,8 +85,6 @@ const changePassword = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  console.log("Forgot password hit");
-  console.log(req.body);
   try {
     const { email } = req.body;
 
@@ -116,7 +114,7 @@ const forgotPassword = async (req, res) => {
     // Create reset URL
     // Add this right before sending email:
 
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
     // Gmail configuration
 
@@ -127,9 +125,6 @@ const forgotPassword = async (req, res) => {
         pass: process.env.EMAIL_PASS,
       },
     });
-
-    console.log("📧 TOKEN LENGTH in URL:", resetToken.length);
-    console.log("📧 FULL URL:", resetUrl);
 
     // Send email
     await transporter.sendMail({
