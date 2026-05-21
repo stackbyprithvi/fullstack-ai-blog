@@ -1,18 +1,23 @@
+// ResetPassword.jsx
 import { useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import API from "../services/api";
 
 const ResetPassword = () => {
   const { token } = useParams();
+
   const navigate = useNavigate();
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
     setSuccess("");
 
@@ -32,82 +37,137 @@ const ResetPassword = () => {
       const response = await API.post(`/auth/reset-password/${token}`, {
         password,
       });
-      setSuccess(
-        response.data.message ||
-          "Password reset successful! Redirecting to login...",
-      );
+
+      setSuccess(response.data.message || "Password reset successful");
 
       setTimeout(() => {
         navigate("/login");
-      }, 3000);
+      }, 2500);
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Failed to reset password. Link may have expired.",
-      );
+      setError(err.response?.data?.message || "Reset link expired or invalid");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100 shadow-sm transition-colors">
-      <h2 className="text-2xl font-bold mb-4">Reset Password</h2>
+    <div className="px-6 py-20">
+      <div className="mx-auto max-w-md rounded-[2rem] border bg-[var(--surface)] p-8">
+        <div className="mb-8">
+          <p className="mb-2 text-sm uppercase tracking-[0.2em] text-[var(--primary)]">
+            Security
+          </p>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 dark:bg-red-700 text-red-700 dark:text-red-100 rounded">
-          {error}
-        </div>
-      )}
+          <h1 className="text-3xl font-semibold tracking-tight">
+            Reset password
+          </h1>
 
-      {success && (
-        <div className="mb-4 p-3 bg-green-100 dark:bg-green-700 text-green-700 dark:text-green-100 rounded">
-          {success}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1 font-medium">New Password</label>
-          <input
-            type="password"
-            placeholder="Enter new password (min 6 characters)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            Create a new password for your account.
+          </p>
         </div>
 
-        <div>
-          <label className="block mb-1 font-medium">Confirm Password</label>
-          <input
-            type="password"
-            placeholder="Confirm new password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
+        {error && (
+          <div className="mb-4 rounded-2xl border border-[var(--secondary)]/20 bg-[var(--secondary)]/10 px-4 py-3 text-sm text-[var(--secondary)]">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-4 rounded-2xl border border-[var(--accent)]/20 bg-[var(--accent)]/10 px-4 py-3 text-sm text-[var(--accent)]">
+            {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              New Password
+            </label>
+
+            <input
+              type="password"
+              placeholder="Minimum 6 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="
+                w-full
+                rounded-[1.2rem]
+                border
+                bg-transparent
+                px-4
+                py-3
+                text-sm
+                outline-none
+                transition
+                placeholder:text-[var(--muted)]
+                focus:border-[var(--primary)]
+              "
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              Confirm Password
+            </label>
+
+            <input
+              type="password"
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="
+                w-full
+                rounded-[1.2rem]
+                border
+                bg-transparent
+                px-4
+                py-3
+                text-sm
+                outline-none
+                transition
+                placeholder:text-[var(--muted)]
+                focus:border-[var(--primary)]
+              "
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="
+              w-full
+              rounded-full
+              bg-[var(--primary)]
+              py-3
+              text-sm
+              font-medium
+              text-white
+              transition
+              hover:opacity-90
+              disabled:opacity-50
+            "
+          >
+            {loading ? "Resetting..." : "Reset Password"}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <Link
+            to="/login"
+            className="
+              text-sm
+              text-[var(--muted)]
+              transition
+              hover:text-[var(--primary)]
+            "
+          >
+            Back to login
+          </Link>
         </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-2 bg-blue-500 dark:bg-blue-600 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-700 disabled:bg-gray-400"
-        >
-          {loading ? "Resetting..." : "Reset Password"}
-        </button>
-      </form>
-
-      <p className="mt-4 text-center text-sm">
-        <Link
-          to="/login"
-          className="text-blue-500 dark:text-blue-400 hover:underline"
-        >
-          Back to Login
-        </Link>
-      </p>
+      </div>
     </div>
   );
 };

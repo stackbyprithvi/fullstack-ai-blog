@@ -1,32 +1,30 @@
-import { useContext, createContext, useEffect, useState } from "react";
+// ThemeContext.jsx
+import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  //Get theme from localstorage or default to 'dark'
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("theme") || "light";
-  });
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
-  // Update localStorage and document class when theme changes
   useEffect(() => {
     const root = document.documentElement;
 
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    theme === "dark"
+      ? root.classList.add("dark")
+      : root.classList.remove("dark");
 
     localStorage.setItem("theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
+      <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
+        {children}
+      </div>
     </ThemeContext.Provider>
   );
 };
