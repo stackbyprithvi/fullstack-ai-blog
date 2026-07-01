@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { postService } from "../services/postService";
 import AIBlogGenerator from "./AIBlogGenerator";
+import AIGlowButton from "../components/AIGlowButton";
 
 const CreatePost = ({ onPostCreated }) => {
   const [title, setTitle] = useState("");
@@ -39,8 +40,20 @@ const CreatePost = ({ onPostCreated }) => {
   };
 
   const fillFromAI = (aiContent) => {
-    setContent(aiContent);
-    setShowAI(false);
+    const lines = aiContent.split("\n");
+
+    // AI returns "# Some Title" as first line
+    const titleLine = lines.find((l) => l.startsWith("# "));
+    const extractedTitle = titleLine
+      ? titleLine.replace(/^#\s+/, "").trim()
+      : "";
+
+    // Everything after the title line goes into content
+    const bodyLines = lines.filter((l) => l !== titleLine);
+    const extractedContent = bodyLines.join("\n").trim();
+
+    if (extractedTitle) setTitle(extractedTitle);
+    setContent(extractedContent);
   };
 
   return (
@@ -54,21 +67,7 @@ const CreatePost = ({ onPostCreated }) => {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAI(!showAI)}
-          className="
-            rounded-full
-            border
-            bg-[var(--surface)]
-            px-4
-            py-2
-            text-sm
-            transition
-            hover:border-[var(--primary)]
-          "
-        >
-          {showAI ? "Close AI" : "AI Writer"}
-        </button>
+        <AIGlowButton variant="neon" showAI={showAI} setShowAI={setShowAI} />
       </div>
 
       {showAI && (

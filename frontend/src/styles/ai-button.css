@@ -1,0 +1,69 @@
+.ai-neon {
+  position: relative;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--primary);
+  color: var(--text);
+
+  /* core neon glow */
+  box-shadow:
+    0 0 8px var(--primary),
+    0 0 18px var(--primary),
+    0 0 40px rgba(0, 0, 0, 0.4);
+
+  overflow: hidden;
+  isolation: isolate;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+/* 🔥 animated neon pulse layer */
+.ai-neon::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+
+  background: radial-gradient(
+    circle at var(--x) var(--y),
+    var(--primary),
+    transparent 60%
+  );
+
+  filter: blur(18px);
+  opacity: 0.9;
+
+  animation: neonPulse 2.5s ease-in-out infinite;
+
+  z-index: -1;
+}
+
+/* subtle energy flicker */
+@keyframes neonPulse {
+  0% {
+    opacity: 0.6;
+    filter: blur(14px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(22px);
+  }
+  100% {
+    opacity: 0.6;
+    filter: blur(14px);
+  }
+}
+
+/* hover = stronger cyber glow */
+.ai-neon:hover {
+  box-shadow:
+    0 0 12px var(--primary),
+    0 0 30px var(--primary),
+    0 0 60px var(--primary);
+}
+
+/* click feedback */
+.ai-neon:active {
+  transform: scale(0.95);
+}
