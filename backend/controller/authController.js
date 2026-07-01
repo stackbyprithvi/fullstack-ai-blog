@@ -112,34 +112,50 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     // Create reset URL
-    // Add this right before sending email:
-
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-    // Gmail configuration
+    // Add logging to debug
+    console.log("Reset URL:", resetUrl);
+    console.log("Email config:", {
+      user: process.env.EMAIL_USER,
+      hasPass: !!process.env.EMAIL_PASS,
+      clientUrl: process.env.CLIENT_URL,
+    });
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        pass: process.env.EMAIL_PASS, // MUST be App Password, not regular Gmail password
       },
     });
 
+    // Test connection (helpful for debugging)
+    await transporter.verify();
+
     // Send email
-    await transporter.sendMail({
+    const mailResponse = await transporter.sendMail({
       from: `"Your Blog App" <${process.env.EMAIL_USER}>`,
       to: user.email,
-      subject: "Password Reset",
-      html: `<a href="${resetUrl}">Reset Password</a>`,
+      subject: "Password Reset Request",
+      html: `
+        <h2>Password Reset Request</h2>
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetUrl}">Reset Password</a>
+        <p>This link expires in 10 minutes.</p>
+      `,
     });
+
+    console.log("Email sent:", mailResponse.messageId);
 
     res.status(200).json({
       message:
         "Password reset link sent to your email. Check your inbox (and spam folder).",
     });
   } catch (error) {
-    console.error("Forgot password error:", error);
+    console.error("Forgot password error:", error.message);
     res.status(500).json({
       message: error.message || "Error sending reset email. Please try again.",
     });

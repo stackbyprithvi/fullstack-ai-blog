@@ -34,6 +34,7 @@ const Navbar = () => {
           <button
             onClick={toggleTheme}
             className="
+              cursor-pointer
               rounded-full
               border
               px-3
